@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(kubectl kustomize:*)",
+      "Bash(kubectl apply:*)",
+      "Bash(kubectl get svc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(git commit -m 'feat: add TLS Ingress to dev overlay with staging Let'\\\\''s Encrypt:*)"
+    ]
+  }
+}

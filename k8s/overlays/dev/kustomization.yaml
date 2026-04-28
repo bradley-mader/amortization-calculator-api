@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dev
+resources:
+  - ../../base
+  - ../../base/cluster-issuer-staging
+images:
+  - name: amortization-api
+    newName: ghcr.io/bradley-mader/ammortizationcalculatorapi
+    newTag: dev-latest
+patches:
+  - patch: |
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: amortization-api
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-staging
+      spec:
+        tls:
+          - hosts:
+              - api-dev.bradley-mader.com
+            secretName: amortization-api-tls-dev
+        rules:
+          - host: api-dev.bradley-mader.com
+            http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: amortization-api
+                      port:
+                        number: 8080
+    target:
+      kind: Ingress
+      name: amortization-api

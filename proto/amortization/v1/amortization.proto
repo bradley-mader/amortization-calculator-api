@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package amortization.v1;
+
+option go_package = "github.com/bradley-mader/amortization-calculator-api/gen/amortization/v1;amortizationv1";
+
+import "google/protobuf/timestamp.proto";
+
+// Payment represents an additional payment applied to the loan principal.
+message Payment {
+  google.protobuf.Timestamp date = 1;
+  double amount = 2;
+}
+
+// SchedulePayment represents a single row in the amortization schedule.
+message SchedulePayment {
+  google.protobuf.Timestamp date = 1;
+  double total_principal_paid = 2;
+  double total_interest_paid = 3;
+  double payment_amount = 4;
+  double payment_principal = 5;
+  double payment_interest = 6;
+}
+
+// AmortizationSchedule contains the full list of scheduled payments.
+message AmortizationSchedule {
+  repeated SchedulePayment payments = 1;
+}
+
+// GetAmortizationScheduleRequest contains the parameters for computing an amortization schedule.
+message GetAmortizationScheduleRequest {
+  double principal = 1;
+  double interest = 2;
+  int32 term = 3;
+  google.protobuf.Timestamp start_date = 4;
+  int32 payment_day_of_month = 5;
+  bool skip_first_month = 6;
+  repeated Payment additional_payments = 7;
+}
+
+// GetAmortizationScheduleResponse contains the computed monthly payment and full schedule.
+message GetAmortizationScheduleResponse {
+  double monthly_payment = 1;
+  AmortizationSchedule schedule = 2;
+}
+
+// AmortizationService provides amortization schedule calculation.
+service AmortizationService {
+  rpc GetAmortizationSchedule(GetAmortizationScheduleRequest) returns (GetAmortizationScheduleResponse);
+}
